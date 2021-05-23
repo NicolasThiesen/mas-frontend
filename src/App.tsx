@@ -1,15 +1,15 @@
-import React from 'react';
-import {Hello} from './components'
-import { Counter } from './components/Counter';
+import { BrowserRouter as Router} from 'react-router-dom'
 import "./style.css";
+import GlobalStyle from "./styles/global";
+import Routes from './routes'
+
 
 function App() {
   return (
-    <div className="App">
-      <Hello name="Nícolas"></Hello>
-      <Counter></Counter>
-      <img src="https://media.giphy.com/media/i7zzhzfytQLwusVTHt/giphy.gif" alt="worked" />
-    </div>
+    <Router>
+      <Routes></Routes>
+      <GlobalStyle></GlobalStyle>
+    </Router>
   );
 }
 
