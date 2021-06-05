@@ -1,47 +1,64 @@
-import {} from './style';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
-import { Header, Summary, Button, ActivyTable } from '../../components';
-import {Container,Content, FormContainer, InputContainer, Background, Error} from './style';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import {Container,Content,FormContainer, InputContainer, Error, Background} from './style';
+import {FiLogIn, FiMail, FiLock} from 'react-icons/fi';
+import { Link, useHistory } from 'react-router-dom';
+import { useForm } from 'react-hook-form'
+import { Button } from '../../components';
+import {useAuth} from '../../hooks/Auth';
 
 interface FormData {
     email: string;
     password: string
 }
 
+export function Login() {
 
-export const Login = () => {
+    const {signIn} = useAuth();
 
-    const { register, handleSubmit, formState: {errors}} = useForm<FormData>();
+    const history = useHistory();
 
-    const onSubmit = handleSubmit(data => alert(JSON.stringify(data)))
+    const { register, handleSubmit, formState: {errors} } = useForm<FormData>();
+
+    const onSubmit = handleSubmit( async data => await signIn({
+            email: data.email,
+            password: data.password
+        }).then(() => history.push('/dashboard'))
+    );
 
     return (
         <Container>
             <Content>
                 <FormContainer>
-                    <h2>Faça o seu Login</h2>
+                    <h2>Faça seu login</h2>
                     <form onSubmit={onSubmit}>
                         <InputContainer>
-                            <FiMail size={40}></FiMail>
-                                <input type="email" placeholder="E-mail" {...register("email", {required:true})} />
+                            <FiMail size={20}/>
+                            <input 
+                                placeholder="E-mail" 
+                                {...register("email", {required:true})}
+                                type="email"
+                            />                         
                         </InputContainer>
-                        {errors.email && <Error>O preenchimento do campo e-mail é obrigatório!</Error>}
+                        {errors.email && <Error>O prenchimento do campo é obrigatório</Error>}
                         <InputContainer>
-                            <FiLock size={40}> </FiLock>
-                                <input type="password" placeholder="Senha" {...register("password", {required: true})}/>
-                        </InputContainer>
-                        {errors.password && <Error>O preenchimento do campo senha é obrigatório!</Error>}
-                        <Button type="submit">Logar</Button>
+                            <FiLock size={20}/>
+                            <input 
+                                placeholder="Senha" 
+                                {...register("password", {required:true})} 
+                                type="password"
+                            />
+                        </InputContainer>                     
+                        {errors.password && <Error>O prenchimento do campo é obrigatório</Error>}  
+                        <Button type="submit">Entrar</Button>
                     </form>
                     <Link to="/register">
-                        <FiLogIn size={40}></FiLogIn>
-                        Cadastrar
+                        <FiLogIn />
+                        Cadastre sua conta
                     </Link>
                 </FormContainer>
+                
             </Content>
-            <Background/>
+            <Background />
         </Container>
+
     )
 }
