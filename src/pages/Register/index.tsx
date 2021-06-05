@@ -1,51 +1,68 @@
-import { Link } from 'react-router-dom';
-import {Container, Content, FormContainer, InputContainer, Error} from './style';
-import { FiLogIn, FiMail, FiLock, FiUser, FiArrowLeft} from 'react-icons/fi';
-import { Button } from '../../components';
-import { Background } from '../Login/style';
+import {Container,Content,FormContainer, InputContainer, Error, Background} from './style';
+import {FiArrowLeft, FiMail, FiLock, FiUser} from 'react-icons/fi';
+import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form'
+import { Button } from '../../components';
+import api from '../../services/api';
 
 interface FormData {
-    name: string;
+    name:string;
     email: string;
     password: string
 }
 
-export const Register = () => {
-    const { register, handleSubmit, formState: {errors}} = useForm<FormData>();
+export function Register() {
 
-    const onSubmit = handleSubmit(data => alert(JSON.stringify(data)))
+    const { register, handleSubmit, formState: {errors} } = useForm<FormData>();
+
+    const history = useHistory()
+
+    const onSubmit = handleSubmit(data => api.post('/user', data).then(() => history.push('/')));
 
     return (
         <Container>
             <Content>
                 <FormContainer>
-                    <h2>Cadastro</h2>
+                    <h2>Faça seu cadastro</h2>
                     <form onSubmit={onSubmit}>
                         <InputContainer>
-                            <FiUser size={40}/>
-                                <input type="text" placeholder="Usuário" {...register("name", {required:true})} />
+                            <FiUser size={20}/>
+                            <input 
+                                placeholder="Nome" 
+                                {...register("name", {required:true})}
+                                type="text"
+                            />
                         </InputContainer>
-                        {errors.name && <Error>O campo usuário é obrigatório</Error>}
+                        {errors.name && <Error>O preenchimento deste campo é obrigatório</Error>}
                         <InputContainer>
-                            <FiMail size={40}></FiMail>
-                                <input type="email" placeholder="E-mail" {...register("email", {required:true})}/>
+                            <FiMail size={20}/>
+                            <input 
+                                placeholder="E-mail" 
+                                {...register("email", {required:true})}
+                                type="email"
+                            />
                         </InputContainer>
-                        {errors.email && <Error>O campo email é obrigatório</Error>}
+                        {errors.email && <Error>O preenchimento deste campo é obrigatório</Error>}
                         <InputContainer>
-                            <FiLock size={40}> </FiLock>
-                                <input type="password" placeholder="Senha" {...register("password", {required:true})}/>
+                            <FiLock size={20}/>
+                            <input 
+                                placeholder="Senha" 
+                                {...register("password", {required:true})} 
+                                type="password"
+                            />
                         </InputContainer>
-                        {errors.password && <Error>O campo senha é obrigatório</Error>}
+                        {errors.password && <Error>O preenchimento deste campo é obrigatório</Error>}                       
                         <Button type="submit">Cadastrar</Button>
                     </form>
                     <Link to="/">
-                        <FiArrowLeft size={40}></FiArrowLeft>
-                        Logar
+                        <FiArrowLeft />
+                        Voltar para login
                     </Link>
                 </FormContainer>
+                
             </Content>
-            <Background></Background>
+            <Background />
         </Container>
+
     )
 }
